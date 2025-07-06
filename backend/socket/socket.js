@@ -3,7 +3,7 @@ import http from "http";
 import express from "express";
 
 const app = express();
-const ur = 'http://localhost:3000';
+const ur = 'https://connect-h2wl.onrender.com';
 const server = http.createServer(app);
 const io = new Server(server, {
     cors:{
