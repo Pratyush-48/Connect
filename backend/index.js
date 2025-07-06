@@ -11,7 +11,7 @@ dotenv.config({});
 import path from "path";
  
 const PORT = process.env.PORT || 5000;
-const ur ='https://connect-h2wl.onrender.com';
+const ur ='https://connect-h2wl.onrender.com/';
 
 const _dirname = path.resolve();
 // middleware
