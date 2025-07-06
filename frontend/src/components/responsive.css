@@ -355,6 +355,83 @@ html, body, #root {
   overflow: auto;
 }
 
+/* ==================== */
+/* Message Bubble Styles */
+/* ==================== */
+
+/* Base bubble style */
+.chat-bubble {
+  border-radius: 1rem !important;
+  padding: 1rem !important;
+  margin: 0.5rem 0 !important;
+  max-width: 70% !important;
+  word-wrap: break-word !important;
+  position: relative !important;
+}
+
+/* Sent messages (your messages) - Right side */
+.chat-end .chat-bubble {
+  background: linear-gradient(90deg, #00dbde, #fc00ff) !important;
+  color: white !important;
+  margin-left: auto !important; /* Align to right */
+}
+
+/* Received messages - Left side */
+.chat-start .chat-bubble {
+  background-color: #374151 !important;
+  color: white !important;
+  margin-right: auto !important; /* Align to left */
+}
+
+/* Message container background */
+.message-container {
+  background-color: #1f2937 !important;
+}
+
+/* Avatar styling */
+.avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+/* Online status indicator */
+.avatar.online::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0.75rem;
+  height: 0.75rem;
+  background-color: #10b981;
+  border-radius: 50%;
+  border: 2px solid #1f2937;
+}
+
+/* ================== */
+/* Layout Adjustments */
+/* ================== */
+
+/* Main chat container */
+.flex-1.bg-gray-700 {
+  background-color: #111827 !important;
+}
+
+/* Message input area */
+.border-zinc-500.bg-gray-600 {
+  background-color: #1f2937 !important;
+  border-color: #4b5563 !important;
+}
+
+/* Header area */
+.bg-gray-800 {
+  background-color: #1f2937 !important;
+}
 /* Mobile Menu Toggle (Add to your JSX) */
 .mobile-menu-toggle {
   display: block;
@@ -426,4 +503,4 @@ html, body, #root {
   .sidebar-container:not(.mobile-open) + .message-container {
     width: 100%;
   }
-}
+} 
