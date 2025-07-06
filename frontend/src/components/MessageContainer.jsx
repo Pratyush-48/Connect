@@ -2,7 +2,7 @@ import React from 'react'
 import SendInput from './SendInput'
 import Messages from './Messages';
 import { useSelector } from "react-redux";
-
+import './responsive.css';
 const MessageContainer = () => {
     const { selectedUser, authUser, onlineUsers } = useSelector(store => store.user);
     const isOnline = onlineUsers?.includes(selectedUser?._id);

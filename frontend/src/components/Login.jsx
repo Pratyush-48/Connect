@@ -5,7 +5,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setAuthUser } from "../redux/userSlice";
 import { BASE_URL } from "..";
-
+import './responsive.css';
 const Login = () => {
   const [user, setUser] = useState({
     username: "",

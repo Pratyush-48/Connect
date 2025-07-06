@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { BiSearchAlt2 } from "react-icons/bi";
 import OtherUsers from './OtherUsers';
 import axios from "axios";
@@ -9,7 +9,7 @@ import { setAuthUser, setOtherUsers, setSelectedUser } from '../redux/userSlice'
 import { setMessages } from '../redux/messageSlice';
 import { BASE_URL } from '..';
 
-const Sidebar = () => {
+const Sidebar = ({ isMobileSidebarOpen, closeMobileSidebar }) => {
     const [search, setSearch] = useState("");
     const { otherUsers } = useSelector(store => store.user);
     const dispatch = useDispatch();
@@ -34,37 +34,44 @@ const Sidebar = () => {
         const conversationUser = otherUsers?.find((user) => user.fullName.toLowerCase().includes(search.toLowerCase()));
         if (conversationUser) {
             dispatch(setOtherUsers([conversationUser]));
+            dispatch(setSelectedUser(conversationUser));
+            if (window.innerWidth <= 768) {
+                closeMobileSidebar();
+                navigate('/chat'); // Ensure this matches your chat route
+            }
         } else {
             toast.error("User not found!");
         }
     }
 
     return (
-        <div className='w-1/4 bg-gray-800 text-white p-4 flex flex-col h-full'>
-            <form onSubmit={searchSubmitHandler} className='flex items-center gap-2 mb-4'>
-                <input
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className='flex-1 bg-gray-700 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500'
-                    type="text"
-                    placeholder='Search...'
-                />
-                <button type='submit' className='bg-purple-600 hover:bg-purple-700 rounded-md p-2'>
-                    <BiSearchAlt2 className='w-5 h-5' />
+        <div className={`sidebar-container ${isMobileSidebarOpen ? 'mobile-open' : ''}`}>
+            <div className='sidebar-content'>
+                <form onSubmit={searchSubmitHandler} className='flex items-center gap-2 mb-4'>
+                    <input
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className='flex-1 bg-gray-700 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500'
+                        type="text"
+                        placeholder='Search...'
+                    />
+                    <button type='submit' className='bg-purple-600 hover:bg-purple-700 rounded-md p-2'>
+                        <BiSearchAlt2 className='w-5 h-5' />
+                    </button>
+                </form>
+                <div className="border-t border-gray-600 my-2"></div>
+                <div className='flex-1 overflow-y-auto'>
+                    <OtherUsers onUserSelect={closeMobileSidebar} />
+                </div>
+                <button 
+                    onClick={logoutHandler} 
+                    className='mt-4 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md'
+                >
+                    Logout
                 </button>
-            </form>
-            <div className="border-t border-gray-600 my-2"></div>
-            <div className='flex-1 overflow-y-auto'>
-                <OtherUsers />
             </div>
-            <button 
-                onClick={logoutHandler} 
-                className='mt-4 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md'
-            >
-                Logout
-            </button>
         </div>
     )
 }
 
-export default Sidebar
+export default Sidebar;

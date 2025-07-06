@@ -3,7 +3,7 @@ import Message from './Message'
 import useGetMessages from '../hooks/useGetMessages';
 import { useSelector } from "react-redux";
 import useGetRealTimeMessage from '../hooks/useGetRealTimeMessage';
-
+import './responsive.css';
 const Messages = () => {
     useGetMessages();
     useGetRealTimeMessage();

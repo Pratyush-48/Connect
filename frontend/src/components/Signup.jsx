@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { BASE_URL } from "..";
-
+import './responsive.css';
 const Signup = () => {
   const [user, setUser] = useState({
     fullName: "",

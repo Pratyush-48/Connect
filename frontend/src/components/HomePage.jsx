@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Application } from '@splinetool/runtime';
-import './HomePage.css';
-
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Application } from "@splinetool/runtime";
+import "./HomePage.css";
+import "./responsive.css";
 const HomePage = () => {
   const navigate = useNavigate();
   const canvasRef = useRef(null);
@@ -10,10 +10,11 @@ const HomePage = () => {
 
   useEffect(() => {
     const splineApp = new Application(canvasRef.current);
-    splineApp.load('https://prod.spline.design/rtiWekBI2eqWUxYn/scene.splinecode')
+    splineApp
+      .load("https://prod.spline.design/rtiWekBI2eqWUxYn/scene.splinecode")
       .then(() => setIsLoading(false))
       .catch((error) => {
-        console.error('Spline error:', error);
+        console.error("Spline error:", error);
         setIsLoading(false);
       });
 
@@ -27,12 +28,14 @@ const HomePage = () => {
       {/* Content Container (Left Side) */}
       <div className="content-container">
         <nav className="navbar">
-          <h1 className="logo" onClick={() => navigate('/')}>ChatConnect</h1>
+          <h1 className="logo" onClick={() => navigate("/")}>
+            ChatConnect
+          </h1>
           <div className="auth-buttons">
-            <button className="btn-secondary" onClick={() => navigate('/login')}>
+            <button className="btn" onClick={() => navigate("/login")}>
               Login
             </button>
-            <button className="btn-primary" onClick={() => navigate('/signup')}>
+            <button className="btn" onClick={() => navigate("/signup")}>
               Sign Up
             </button>
           </div>
@@ -40,35 +43,39 @@ const HomePage = () => {
 
         <main className="main-content">
           <div className="hero-section">
-            <h1 className="main-heading">Connect Instantly,<br />Chat Effortlessly</h1>
+            <h1 className="main-heading">
+              Connect Instantly,
+              <br />
+              Chat Effortlessly
+            </h1>
             <p className="subheading">
-              Experience seamless real-time messaging with end-to-end encryption
-              and unlimited customization options.
+              Experience seamless real-time text messaging with unlimited
+              conversations
             </p>
           </div>
 
           <div className="cta-buttons">
-            <button className="btn-primary" onClick={() => navigate('/signup')}>
+            <button className="btn" onClick={() => navigate("/signup")}>
               Get Started
             </button>
           </div>
 
           <div className="features">
             <div className="feature-card">
-              <h3>⚡ Real-time</h3>
-              <p>Messages delivered instantly with no delays</p>
+              <h3>⚡ Instant Text</h3>
+              <p>Messages delivered in real-time</p>
             </div>
             <div className="feature-card">
-              <h3>🔒 Secure</h3>
-              <p>Military-grade encryption for all conversations</p>
+              <h3>📱 Always Available</h3>
+              <p>Continue conversations across devices</p>
             </div>
             <div className="feature-card">
-              <h3>💬 Unlimited</h3>
-              <p>No limits on messages or media sharing</p>
+              <h3>📅 Conversation History</h3>
+              <p>All your messages are saved</p>
             </div>
             <div className="feature-card">
-              <h3>💬 Unlimited</h3>
-              <p>No limits on messages or media sharing</p>
+              <h3>🌙 Dark Mode</h3>
+              <p>Comfortable nighttime chatting</p>
             </div>
           </div>
         </main>

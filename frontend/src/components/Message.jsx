@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-
+import './responsive.css';
 const Message = ({ message }) => {
     const scroll = useRef();
     const { authUser, selectedUser } = useSelector(store => store.user);

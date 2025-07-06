@@ -4,7 +4,7 @@ import axios from "axios";
 import {useDispatch,useSelector} from "react-redux";
 import { setMessages } from '../redux/messageSlice';
 import { BASE_URL } from '..';
-
+import './responsive.css';
 const SendInput = () => {
     const [message, setMessage] = useState("");
     const dispatch = useDispatch();
