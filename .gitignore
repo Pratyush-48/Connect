@@ -1,6 +1,4 @@
 /node_modules
 .env
 *.md
-!README.md
-!PROJECT_STRUCTURE.md
-!DEVELOPMENT_JOURNEY.md
+!readme.md
