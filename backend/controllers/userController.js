@@ -1,6 +1,7 @@
 import { User } from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { getAvatarUrl, shouldReplaceAvatar } from "../utils/avatar.js";
 
 export const register = async (req, res) => {
     try {
@@ -18,15 +19,13 @@ export const register = async (req, res) => {
         }
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // profilePhoto
-        const maleProfilePhoto = `https://avatar.iran.liara.run/public/boy?username=${username}`;
-        const femaleProfilePhoto = `https://avatar.iran.liara.run/public/girl?username=${username}`;
+        const profilePhoto = getAvatarUrl(username || fullName);
 
         await User.create({
             fullName,
             username,
             password: hashedPassword,
-            profilePhoto: gender === "male" ? maleProfilePhoto : femaleProfilePhoto,
+            profilePhoto,
             gender
         });
         return res.status(201).json({
@@ -57,6 +56,11 @@ export const login = async (req, res) => {
                 success: false
             })
         };
+
+        if (shouldReplaceAvatar(user.profilePhoto)) {
+            user.profilePhoto = getAvatarUrl(user.username || user.fullName || user._id.toString());
+            await user.save();
+        }
         const tokenData = {
             userId: user._id
         };
@@ -87,6 +91,22 @@ export const getOtherUsers = async (req, res) => {
     try {
         const loggedInUserId = req.id;
         const otherUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
+        const updates = [];
+        otherUsers.forEach((user) => {
+            if (shouldReplaceAvatar(user.profilePhoto)) {
+                const avatar = getAvatarUrl(user.username || user.fullName || user._id.toString());
+                user.profilePhoto = avatar;
+                updates.push({
+                    updateOne: {
+                        filter: { _id: user._id },
+                        update: { $set: { profilePhoto: avatar } }
+                    }
+                });
+            }
+        });
+        if (updates.length) {
+            await User.bulkWrite(updates);
+        }
         return res.status(200).json(otherUsers);
     } catch (error) {
         console.log(error);

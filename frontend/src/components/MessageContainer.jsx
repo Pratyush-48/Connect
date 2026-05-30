@@ -2,35 +2,62 @@ import React from 'react'
 import SendInput from './SendInput'
 import Messages from './Messages';
 import { useSelector } from "react-redux";
+import ThemeToggle from './ThemeToggle';
+import getAvatarUrl from '../utils/avatar';
 import './responsive.css';
 const MessageContainer = () => {
     const { selectedUser, authUser, onlineUsers } = useSelector(store => store.user);
-    const isOnline = onlineUsers?.includes(selectedUser?._id);
+    const isOnline = Boolean(onlineUsers?.includes(selectedUser?._id));
+    const selectedSeed = selectedUser?.username || selectedUser?.fullName || selectedUser?._id || 'user';
+    const selectedAvatar = selectedUser?.profilePhoto || getAvatarUrl(selectedSeed);
    
     return (
-        <div className='flex-1 bg-gray-700 flex flex-col'>
+        <div className="chat-main">
+            <div className="chat-header">
+                <div className="chat-header-left">
+                    {selectedUser ? (
+                        <>
+                            <div className="chat-header-avatar">
+                                <img
+                                    src={selectedAvatar}
+                                    alt="user-profile"
+                                    onError={(e) => {
+                                        e.currentTarget.onerror = null;
+                                        e.currentTarget.src = getAvatarUrl(selectedSeed);
+                                    }}
+                                />
+                                <span className={`presence-dot ${isOnline ? 'online' : 'offline'}`}></span>
+                            </div>
+                            <div className="chat-header-meta">
+                                <p className="chat-title">{selectedUser?.fullName}</p>
+                                <span className={`status-pill ${isOnline ? 'online' : 'offline'}`}>
+                                    {isOnline ? "Online" : "Offline"}
+                                </span>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="chat-header-placeholder">
+                            <p className="chat-title">Inbox</p>
+                            <span className="chat-subtitle">Pick a conversation to start</span>
+                        </div>
+                    )}
+                </div>
+                <div className="chat-header-actions">
+                    <ThemeToggle compact />
+                </div>
+            </div>
+
             {selectedUser !== null ? (
                 <>
-                    <div className='flex gap-2 items-center bg-gray-800 text-white px-4 py-3 border-b border-gray-600'>
-                        <div className={`avatar ${isOnline ? 'online' : ''}`}>
-                            <div className='w-10 rounded-full'>
-                                <img src={selectedUser?.profilePhoto} alt="user-profile" />
-                            </div>
-                        </div>
-                        <div className='flex-1'>
-                            <p className='font-semibold'>{selectedUser?.fullName}</p>
-                            <p className='text-xs text-gray-300'>
-                                {isOnline ? 'Online' : 'Offline'}
-                            </p>
-                        </div>
-                    </div>
                     <Messages />
                     <SendInput />
                 </>
             ) : (
-                <div className='flex-1 flex flex-col items-center justify-center text-white'>
-                    <h1 className='text-4xl font-bold mb-4'>Hi, {authUser?.fullName}</h1>
-                    <p className='text-xl text-gray-300'>Select a chat to start messaging</p>
+                <div className="chat-empty">
+                    <div>
+                        <p className="chat-empty-title">Welcome, {authUser?.fullName}</p>
+                        <p className="chat-empty-subtitle">Select someone to start a conversation.</p>
+                    </div>
                 </div>
             )}
         </div>

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { BASE_URL } from "..";
+import ThemeToggle from "./ThemeToggle";
 import './responsive.css';
 const Signup = () => {
   const [user, setUser] = useState({
@@ -30,7 +31,11 @@ const Signup = () => {
         toast.success(res.data.message);
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Signup failed. Please try again.";
+      toast.error(message);
       console.log(error);
     }
     setUser({
@@ -42,97 +47,87 @@ const Signup = () => {
     });
   };
   return (
-    <div className="min-w-96 mx-auto">
-      <div className="w-full p-6 rounded-lg shadow-md bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-10 border border-gray-100">
-        <h1 className="text-3xl font-bold text-center">Signup</h1>
-        <form onSubmit={onSubmitHandler} action="">
-          <div>
-            <label className="label p-2">
-              <span className="text-base label-text">Full Name</span>
-            </label>
+    <div className="auth-page">
+      <div className="auth-topbar">
+        <button className="brand" onClick={() => navigate("/")}>Connect</button>
+        <ThemeToggle compact />
+      </div>
+      <div className="auth-card">
+        <div className="auth-header">
+          <h1 className="auth-title">Create your account</h1>
+          <p className="auth-subtitle">Join and start chatting with your team.</p>
+        </div>
+        <form onSubmit={onSubmitHandler} className="auth-form">
+          <div className="auth-field">
+            <label className="auth-label">Full Name</label>
             <input
               value={user.fullName}
               onChange={(e) => setUser({ ...user, fullName: e.target.value })}
-              className="w-full input input-bordered h-10"
+              className="input-field"
               type="text"
-              placeholder="Full Name"
+              placeholder="Enter your full name"
             />
           </div>
-          <div>
-            <label className="label p-2">
-              <span className="text-base label-text">Username</span>
-            </label>
+          <div className="auth-field">
+            <label className="auth-label">Username</label>
             <input
               value={user.username}
               onChange={(e) => setUser({ ...user, username: e.target.value })}
-              className="w-full input input-bordered h-10"
+              className="input-field"
               type="text"
-              placeholder="Username"
+              placeholder="Choose a username"
             />
           </div>
-          <div>
-            <label className="label p-2">
-              <span className="text-base label-text">Password</span>
-            </label>
+          <div className="auth-field">
+            <label className="auth-label">Password</label>
             <input
               value={user.password}
               onChange={(e) => setUser({ ...user, password: e.target.value })}
-              className="w-full input input-bordered h-10"
+              className="input-field"
               type="password"
-              placeholder="Password"
+              placeholder="Create a password"
             />
           </div>
-          <div>
-            <label className="label p-2">
-              <span className="text-base label-text">Confirm Password</span>
-            </label>
+          <div className="auth-field">
+            <label className="auth-label">Confirm Password</label>
             <input
               value={user.confirmPassword}
               onChange={(e) =>
                 setUser({ ...user, confirmPassword: e.target.value })
               }
-              className="w-full input input-bordered h-10"
+              className="input-field"
               type="password"
-              placeholder="Confirm Password"
+              placeholder="Confirm password"
             />
           </div>
-          <div className="flex items-center my-4">
-            <div className="flex items-center">
-              <p>Male</p>
-              <input
-                type="checkbox"
-                checked={user.gender === "male"}
-                onChange={() => handleCheckbox("male")}
-                defaultChecked
-                className="checkbox mx-2"
-              />
-            </div>
-            <div className="flex items-center">
-              <p>Female</p>
-              <input
-                type="checkbox"
-                checked={user.gender === "female"}
-                onChange={() => handleCheckbox("female")}
-                defaultChecked
-                className="checkbox mx-2"
-              />
+          <div className="auth-toggle">
+            <span>Gender</span>
+            <div className="auth-toggle-group">
+              <label className="toggle-option">
+                <input
+                  type="checkbox"
+                  checked={user.gender === "male"}
+                  onChange={() => handleCheckbox("male")}
+                />
+                <span>Male</span>
+              </label>
+              <label className="toggle-option">
+                <input
+                  type="checkbox"
+                  checked={user.gender === "female"}
+                  onChange={() => handleCheckbox("female")}
+                />
+                <span>Female</span>
+              </label>
             </div>
           </div>
-          <p className="text-center my-2">
-            Already have an account? <Link to="/login"> login </Link>
-          </p>
-          <button
-            type="submit"
-            className="btn-primary w-full mt-2"
-            style={{
-              padding: "0.4rem 2rem",
-              borderRadius: "2rem",
-              background: "linear-gradient(90deg, #00dbde, #fc00ff)",
-            }}
-          >
+          <button type="submit" className="btn-primary auth-submit">
             Signup
           </button>
         </form>
+        <p className="auth-footer">
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
       </div>
     </div>
   );

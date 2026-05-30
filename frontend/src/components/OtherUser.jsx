@@ -1,50 +1,34 @@
 import React from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { setSelectedUser } from '../redux/userSlice';
-import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import getAvatarUrl from '../utils/avatar';
 import './responsive.css';
 
-const OtherUser = ({ user, onUserSelect }) => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+const OtherUser = ({ user }) => {
     const { selectedUser, onlineUsers } = useSelector(store => store.user);
-    const isOnline = onlineUsers?.includes(user._id);
-
-    const selectedUserHandler = (user) => {
-        dispatch(setSelectedUser(user));
-        // Close sidebar and redirect on mobile
-        if (window.innerWidth <= 768) {
-            onUserSelect?.(); // Call the parent's close function if provided
-            navigate('/chat'); // Adjust to your actual chat route if different
-        }
-    };
+    const isOnline = Boolean(onlineUsers?.includes(user._id));
+    const avatarSeed = user?.username || user?.fullName || user?._id || 'user';
+    const avatarUrl = user?.profilePhoto || getAvatarUrl(avatarSeed);
 
     return (
-        <>
-            <div 
-                onClick={() => selectedUserHandler(user)} 
-                className={`${selectedUser?._id === user?._id ? 'bg-zinc-200 text-black' : 'text-white'} flex gap-2 hover:text-black items-center hover:bg-zinc-200 rounded p-2 cursor-pointer transition-colors duration-200`}
-            >
-                <div className={`avatar ${isOnline ? 'online' : ''}`}>
-                    <div className='w-12 rounded-full'>
-                        <img 
-                            src={user?.profilePhoto} 
-                            alt="user-profile" 
-                            className="object-cover w-full h-full"
-                        />
-                    </div>
-                </div>
-                <div className='flex flex-col flex-1'>
-                    <div className='flex justify-between gap-2'>
-                        <p className="font-medium">{user?.fullName}</p>
-                        {isOnline && (
-                            <span className="text-xs text-green-500">Online</span>
-                        )}
-                    </div>
-                </div>
+        <div className={`user-row ${selectedUser?._id === user?._id ? 'is-active' : ''}`}>
+            <div className="user-avatar">
+                <img
+                    src={avatarUrl}
+                    alt="user-profile"
+                    onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = getAvatarUrl(avatarSeed);
+                    }}
+                />
+                <span className={`presence-dot ${isOnline ? 'online' : 'offline'}`}></span>
             </div>
-            <div className='divider my-0 py-0 h-1'></div>
-        </>
+            <div className="user-meta">
+                <p className="user-name">{user?.fullName}</p>
+                <span className={`user-status ${isOnline ? 'online' : 'offline'}`}>
+                    {isOnline ? "Online" : "Offline"}
+                </span>
+            </div>
+        </div>
     );
 };
 

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Encryption Diagnostic Tool</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .section h2 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .check {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            gap: 10px;
+            font-size: 14px;
+        }
+        .check.pass {
+            color: #27ae60;
+        }
+        .check.fail {
+            color: #e74c3c;
+        }
+        .check.warn {
+            color: #f39c12;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 12px;
+            margin-left: auto;
+        }
+        .pass .status-badge {
+            background: #d4edda;
+            color: #155724;
+        }
+        .fail .status-badge {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .warn .status-badge {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        .summary h2 {
+            margin-bottom: 15px;
+            color: white;
+        }
+        .score {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        .loading {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .fix-instructions {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .fix-instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .fix-instructions ol {
+            margin-left: 20px;
+            color: #34495e;
+        }
+        .fix-instructions li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Encryption Diagnostic Tool</h1>
+        <p class="subtitle">Checking your message encryption setup...</p>
+        
+        <div id="diagnostics">
+            <div class="section">
+                <div class="check warn">
+                    <span class="loading">⟳</span>
+                    <span>Running diagnostics...</span>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="location.reload()">🔄 Run Again</button>
+    </div>
+
+    <script>
+        async function runDiagnostics() {
+            const results = [];
+            
+            // CHECK 1: Environment Variable
+            const envKey = process.env.REACT_APP_MESSAGE_ENCRYPTION_KEY;
+            results.push({
+                name: "Frontend Environment Key",
+                pass: !!envKey,
+                message: envKey 
+                    ? `✓ Key loaded: ${envKey.substring(0, 20)}...`
+                    : "✗ REACT_APP_MESSAGE_ENCRYPTION_KEY not found in .env.local"
+            });
+            
+            // CHECK 2: LocalStorage Key
+            const localKey = localStorage.getItem("encryption_key");
+            results.push({
+                name: "LocalStorage Fallback",
+                pass: !!localKey,
+                message: localKey 
+                    ? `✓ Key stored: ${localKey.substring(0, 20)}...`
+                    : "⊘ No fallback key in localStorage"
+            });
+            
+            // CHECK 3: Key Format
+            const keyToCheck = envKey || localKey;
+            if (keyToCheck) {
+                const isHex = /^[0-9a-f]{64}$/i.test(keyToCheck.trim());
+                results.push({
+                    name: "Key Format",
+                    pass: isHex,
+                    message: isHex 
+                        ? "✓ Valid hex format (64 characters = 32 bytes)"
+                        : "✗ Invalid format (must be 64-char hex)"
+                });
+            }
+            
+            // CHECK 4: Web Crypto API
+            const hasWebCrypto = !!window.crypto?.subtle;
+            results.push({
+                name: "Web Crypto API",
+                pass: hasWebCrypto,
+                message: hasWebCrypto 
+                    ? "✓ Available (for encryption)"
+                    : "✗ Not available"
+            });
+            
+            // CHECK 5: Test Encryption
+            if (hasWebCrypto && keyToCheck) {
+                try {
+                    const keyBytes = new Uint8Array(
+                        keyToCheck.trim().match(/.{1,2}/g).map(b => parseInt(b, 16))
+                    );
+                    const key = await crypto.subtle.importKey(
+                        "raw",
+                        keyBytes,
+                        { name: "AES-GCM" },
+                        false,
+                        ["encrypt", "decrypt"]
+                    );
+                    
+                    const iv = crypto.getRandomValues(new Uint8Array(12));
+                    const encrypted = await crypto.subtle.encrypt(
+                        { name: "AES-GCM", iv },
+                        key,
+                        new TextEncoder().encode("Test message")
+                    );
+                    
+                    results.push({
+                        name: "Encryption Test",
+                        pass: true,
+                        message: "✓ Test message encrypted successfully"
+                    });
+                } catch (e) {
+                    results.push({
+                        name: "Encryption Test",
+                        pass: false,
+                        message: `✗ Encryption failed: ${e.message}`
+                    });
+                }
+            }
+            
+            return results;
+        }
+
+        async function displayResults(results) {
+            const diagnosticsDiv = document.getElementById('diagnostics');
+            diagnosticsDiv.innerHTML = '';
+            
+            let passCount = 0;
+            
+            results.forEach(result => {
+                const div = document.createElement('div');
+                div.className = `check ${result.pass ? 'pass' : 'fail'}`;
+                div.innerHTML = `
+                    <span>${result.pass ? '✓' : '✗'}</span>
+                    <span>${result.name}</span>
+                    <span class="status-badge">${result.message}</span>
+                `;
+                diagnosticsDiv.appendChild(div);
+                if (result.pass) passCount++;
+            });
+            
+            const totalChecks = results.length;
+            const allPass = passCount === totalChecks;
+            
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = 'summary';
+            
+            if (allPass) {
+                summaryDiv.innerHTML = `
+                    <h2>🎉 All Checks Passed!</h2>
+                    <p style="margin-bottom: 20px;">Your encryption is properly configured.</p>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 6px;">
+                        <strong>Next Steps:</strong>
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li>Restart React app: <code style="background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 3px;">npm start</code></li>
+                            <li>Send a test message</li>
+                            <li>Check DevTools Console for "✓ Message encrypted successfully" log</li>
+                            <li>Check Database to verify message is encrypted (starts with "enc:")</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                const fixedSteps = [];
+                
+                if (!results[0].pass) {
+                    fixedSteps.push(`
+                        <li>Create file: <code style="background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 3px;">frontend/.env.local</code></li>
+                        <li>Add this line:
+                            <div class="code">REACT_APP_MESSAGE_ENCRYPTION_KEY=ad70361a3d89be124ca8a04f39511a94770e8d76dafd08e0bab7e349a9a21a0b</div>
+                        </li>
+                        <li>Restart React app: <code style="background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 3px;">npm start</code></li>
+                    `);
+                }
+                
+                summaryDiv.innerHTML = `
+                    <h2>⚠️ Issues Found</h2>
+                    <p style="margin-bottom: 20px;">Score: ${passCount}/${totalChecks}</p>
+                    <strong style="display: block; margin-bottom: 15px;">How to Fix:</strong>
+                    <ol style="margin-left: 20px;">
+                        ${fixedSteps.join('')}
+                    </ol>
+                `;
+            }
+            
+            diagnosticsDiv.appendChild(summaryDiv);
+        }
+
+        // Run diagnostics
+        runDiagnostics().then(displayResults).catch(err => {
+            const div = document.createElement('div');
+            div.className = 'section fail';
+            div.innerHTML = `
+                <h2>❌ Error</h2>
+                <p>${err.message}</p>
+            `;
+            document.getElementById('diagnostics').appendChild(div);
+        });
+    </script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BiSearchAlt2 } from "react-icons/bi";
 import OtherUsers from './OtherUsers';
+import ThemeToggle from './ThemeToggle';
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -45,32 +46,38 @@ const Sidebar = ({ isMobileSidebarOpen, closeMobileSidebar }) => {
     }
 
     return (
-        <div className={`sidebar-container ${isMobileSidebarOpen ? 'mobile-open' : ''}`}>
-            <div className='sidebar-content'>
-                <form onSubmit={searchSubmitHandler} className='flex items-center gap-2 mb-4'>
+        <aside className={`chat-sidebar ${isMobileSidebarOpen ? 'is-open' : ''}`}>
+            <div className="sidebar-content">
+                <div className="sidebar-header">
+                    <div>
+                        <p className="sidebar-title">Conversations</p>
+                        <p className="sidebar-subtitle">Search or start a new chat</p>
+                    </div>
+                    <ThemeToggle compact />
+                </div>
+                <form onSubmit={searchSubmitHandler} className="sidebar-search">
                     <input
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className='flex-1 bg-gray-700 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500'
+                        className="input-field"
                         type="text"
-                        placeholder='Search...'
+                        placeholder="Search people"
                     />
-                    <button type='submit' className='bg-purple-600 hover:bg-purple-700 rounded-md p-2'>
-                        <BiSearchAlt2 className='w-5 h-5' />
+                    <button type="submit" className="search-btn" aria-label="Search">
+                        <BiSearchAlt2 />
                     </button>
                 </form>
-                <div className="border-t border-gray-600 my-2"></div>
-                <div className='flex-1 overflow-y-auto'>
+                <p className="sidebar-section-title">People</p>
+                <div className="sidebar-list">
                     <OtherUsers onUserSelect={closeMobileSidebar} />
                 </div>
-                <button 
-                    onClick={logoutHandler} 
-                    className='mt-4 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md'
-                >
-                    Logout
-                </button>
+                <div className="sidebar-footer">
+                    <button onClick={logoutHandler} className="btn-danger">
+                        Logout
+                    </button>
+                </div>
             </div>
-        </div>
+        </aside>
     )
 }
 

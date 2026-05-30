@@ -1,16 +1,16 @@
 import Signup from './components/Signup';
 import './App.css';
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from './components/HomePage';
 import Login from './components/Login';
-import chat from './components/chat';
-import { useEffect, useState } from 'react';
-import {useSelector,useDispatch} from "react-redux";
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from "react-redux";
 import io from "socket.io-client";
 import { setSocket } from './redux/socketSlice';
 import { setOnlineUsers } from './redux/userSlice';
 import { BASE_URL } from '.';
 import Chat from './components/chat';
+import { ThemeProvider } from "./context/ThemeContext";
 
 const router = createBrowserRouter([
   {
@@ -60,10 +60,11 @@ function App() {
   },[authUser]);
 
   return (
-    <div className="p-4 h-screen flex items-center justify-center">
-      <RouterProvider router={router}/>
-    </div>
-
+    <ThemeProvider>
+      <div className="cc-root">
+        <RouterProvider router={router} />
+      </div>
+    </ThemeProvider>
   );
 }
 

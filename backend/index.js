@@ -11,16 +11,27 @@ dotenv.config({});
 import path from "path";
  
 const PORT = process.env.PORT || 5000;
-const ur ='https://connect-h2wl.onrender.com';
+const ur = "https://connect-h2wl.onrender.com";
 
 const _dirname = path.resolve();
 // middleware
 app.use(express.urlencoded({extended:true}));
 app.use(express.json()); 
 app.use(cookieParser());
-const corsOption={
-    origin:ur,
-    credentials:true
+const allowedOrigins = [
+    process.env.CLIENT_ORIGIN,
+    "http://localhost:3000",
+    ur,
+].filter(Boolean);
+
+const corsOption = {
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true
 };
 app.use(cors(corsOption)); 
 

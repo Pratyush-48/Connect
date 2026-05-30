@@ -9,8 +9,8 @@ const Chat = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobileView(window.innerWidth <= 768);
-      if (window.innerWidth > 768) {
+      setIsMobileView(window.innerWidth <= 960);
+      if (window.innerWidth > 960) {
         setSidebarOpen(true);
       }
     };
@@ -31,25 +31,25 @@ const Chat = () => {
   };
 
   return (
-    <div className="app">
+    <div className="chat-shell">
       {isMobileView && (
-        <button 
-          className="mobile-menu-toggle"
+        <button
+          className="chat-menu-btn"
           onClick={toggleSidebar}
-          aria-label={sidebarOpen ? 'Close menu' : 'Open menu'}
+          aria-label={sidebarOpen ? "Close menu" : "Open menu"}
         >
-          {sidebarOpen ? '✕' : '☰'}
+          {sidebarOpen ? "X" : "Menu"}
         </button>
       )}
 
       {isMobileView && sidebarOpen && (
-        <div 
-          className="sidebar-overlay"
+        <div
+          className="chat-overlay"
           onClick={closeSidebar}
         />
       )}
 
-      <Sidebar 
+      <Sidebar
         isMobileSidebarOpen={sidebarOpen}
         closeMobileSidebar={closeSidebar}
       />

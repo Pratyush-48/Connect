@@ -10,7 +10,8 @@ import { persistStore } from 'redux-persist';
 
 let persistor = persistStore(store);
 
-export const BASE_URL="https://connect-h2wl.onrender.com"
+export const BASE_URL =
+  process.env.REACT_APP_BASE_URL || "http://localhost:8080";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
