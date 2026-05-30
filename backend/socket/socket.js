@@ -7,8 +7,9 @@ const ur = 'https://connect-h2wl.onrender.com';
 const server = http.createServer(app);
 const io = new Server(server, {
     cors:{
-        origin:[{ur}],
-        methods:['GET', 'POST'],
+        origin: [ur, 'http://localhost:3000'],
+        methods: ['GET', 'POST'],
+        credentials: true
     },
 });
 

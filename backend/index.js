@@ -41,9 +41,9 @@ app.use("/api/v1/user",userRoute);
 app.use("/api/v1/message",messageRoute);
  
 
-app.use(express.static(path.join(_dirname,"/frontend/build")));
-app.get('*',(_,res)=>{
-    res.sendFile(path.resolve(_dirname,"frotend","dist","index.html"));
+app.use(express.static(path.join(_dirname, "/frontend/dist")));
+app.get('*', (_, res) => {
+    res.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"));
 });
 
 server.listen(PORT, ()=>{
