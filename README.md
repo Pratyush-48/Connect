@@ -1,6 +1,6 @@
 # 🔐 Connect - End-to-End Encrypted Real-Time Messaging Application
 
-**Live Demo**: https://connect-h2wl.onrender.com/  
+**Live Demo**: https://connect-ezy0.onrender.com 
 **Repository**: https://github.com/Pratyush-48/Connect
 
 ## 📋 Table of Contents
